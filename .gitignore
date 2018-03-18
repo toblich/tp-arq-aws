@@ -4,3 +4,10 @@
 
 # Module directory
 .terraform/
+
+# Node
+node_modules/
+
+# Local files
+terraform.tfvars
+*.txt
