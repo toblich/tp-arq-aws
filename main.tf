@@ -1,10 +1,15 @@
-# locals {
-#   connection = {
-#     type        = "ssh"
-#     user        = "ec2-user"
-#     private_key = "${file(var.private_key_location)}"
-#   }
-# }
+locals {
+  installer_urls = {
+    datadog_agent = "https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh"
+    nvm           = "https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh"
+  }
+
+  #   connection = {
+  #     type        = "ssh"
+  #     user        = "ec2-user"
+  #     private_key = "${file(var.private_key_location)}"
+  #   }
+}
 
 resource "aws_instance" "node" {
   ami                    = "ami-1853ac65"
@@ -23,7 +28,7 @@ resource "aws_instance" "node" {
   provisioner "remote-exec" {
     inline = [
       "echo ------- Download nvm and install it -------",
-      "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash",
+      "curl -o- ${local.installer_urls["nvm"]} | bash",
       "echo ------- Load nvm -------",
       ". ~/.nvm/nvm.sh",
       "echo ------- Install node -------",
@@ -32,6 +37,10 @@ resource "aws_instance" "node" {
       "npm version",
       "echo ------- Create application directory: ${var.root} -------",
       "mkdir ${var.root}",
+      "echo ------- Install Datadog Agent -------",
+      "export DD_API_KEY=${var.datadog_key}",
+      "export DD_PROCESS_AGENT_ENABLED=true",
+      "curl -L -o- ${local.installer_urls["datadog_agent"]} | bash",
     ]
 
     connection {
