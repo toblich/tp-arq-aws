@@ -5,7 +5,7 @@ locals {
 }
 
 resource "aws_instance" "node" {
-  ami                    = "ami-1853ac65"
+  ami                    = "${var.ami_id}"
   instance_type          = "t2.micro"
   key_name               = "${var.key_pair_name}"
   vpc_security_group_ids = ["${aws_security_group.apps.id}"]

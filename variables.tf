@@ -22,3 +22,7 @@ variable "private_key_location" {
 variable "vpc_id" {
   default = "vpc-7563400d"
 }
+
+variable "ami_id" {
+  default = "ami-1853ac65"
+}
