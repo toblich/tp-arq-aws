@@ -1,6 +1,10 @@
 #!/bin/bash
 
+set -e
+
 DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 IP=`cat $DIR/node_ip_address.txt`
 
-ssh -i $DIR/../key.pem ec2-user@$IP "pkill node"
+echo -n 'Stopping remote app... '
+$DIR/remote 'pkill node'
+echo 'Stopped.'
