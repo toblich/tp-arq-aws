@@ -16,7 +16,7 @@ resource "aws_instance" "node" {
 
   # Store the resulting IP
   provisioner "local-exec" {
-    command = "echo ${aws_instance.node.public_ip} > node_ip_address.txt"
+    command = "echo ${aws_instance.node.public_ip} > node/node_ip_address.txt"
   }
 
   # Environment setup

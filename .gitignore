@@ -12,3 +12,4 @@ node_modules/
 # Local files
 terraform.tfvars
 *.txt
+key.pem
