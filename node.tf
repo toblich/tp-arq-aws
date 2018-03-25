@@ -16,7 +16,7 @@ resource "aws_instance" "node" {
 
   # Store the resulting IP
   provisioner "local-exec" {
-    command = "echo ${aws_instance.node.public_ip} > node/node_ip_address.txt"
+    command = "echo ${aws_instance.node.public_ip} > node/ip"
   }
 
   # Environment setup
@@ -108,9 +108,6 @@ resource "aws_instance" "node" {
       "cd ${var.root}",
       "echo ------- Install dependencies -------",
       "npm install",
-      "echo \n************************************\n",
-      "echo ------- Starting app in background -------",
-      "node . &",
     ]
 
     connection {

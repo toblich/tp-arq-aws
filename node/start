@@ -3,7 +3,6 @@
 set -e
 
 DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IP=`cat $DIR/node_ip_address.txt`
 
 echo -n 'Starting remote app... '
 $DIR/remote 'nohup node app > node.out 2> node.err < /dev/null &'
