@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+COMMAND=$@
+
+DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+IP=`cat $DIR/ip`
+
+ssh -i $DIR/../key.pem ec2-user@$IP -- $COMMAND
