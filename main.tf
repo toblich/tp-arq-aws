@@ -1,14 +1,7 @@
 locals {
   installer_urls = {
-    datadog_agent = "https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/install_agent.sh"
-    nvm           = "https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh"
+    nvm = "https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh"
   }
-
-  #   connection = {
-  #     type        = "ssh"
-  #     user        = "ec2-user"
-  #     private_key = "${file(var.private_key_location)}"
-  #   }
 }
 
 resource "aws_instance" "node" {
@@ -21,10 +14,12 @@ resource "aws_instance" "node" {
     Name = "tp_arqui_node"
   }
 
+  # Store the resulting IP
   provisioner "local-exec" {
     command = "echo ${aws_instance.node.public_ip} > node_ip_address.txt"
   }
 
+  # Environment setup
   provisioner "remote-exec" {
     inline = [
       "echo ------- Download nvm and install it -------",
@@ -37,10 +32,6 @@ resource "aws_instance" "node" {
       "npm version",
       "echo ------- Create application directory: ${var.root} -------",
       "mkdir ${var.root}",
-      "echo ------- Install Datadog Agent -------",
-      "export DD_API_KEY=${var.datadog_key}",
-      "export DD_PROCESS_AGENT_ENABLED=true",
-      "curl -L -o- ${local.installer_urls["datadog_agent"]} | bash",
     ]
 
     connection {
@@ -50,6 +41,33 @@ resource "aws_instance" "node" {
     }
   }
 
+  # Upload installer script
+  provisioner "file" {
+    source      = "install_datadog.sh"
+    destination = "~/install_datadog.sh"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = "${file(var.private_key_location)}"
+    }
+  }
+
+  # Execute installer script
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x ~/install_datadog.sh",
+      "~/install_datadog.sh ${var.datadog_key}",
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      private_key = "${file(var.private_key_location)}"
+    }
+  }
+
+  # Upload app
   provisioner "file" {
     source      = "node/app.js"
     destination = "${var.root}/app.js"
@@ -83,6 +101,7 @@ resource "aws_instance" "node" {
     }
   }
 
+  # Install app deps and run
   provisioner "remote-exec" {
     inline = [
       "echo ------- Move into application directory: ${var.root} -------",
