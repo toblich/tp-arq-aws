@@ -4,11 +4,23 @@ locals {
   }
 }
 
+data "template_file" "node_user_data" {
+  template = "${file("${path.module}/node_user_data.sh")}"
+
+  vars {
+    root         = "${var.root}"
+    datadog_key  = "${var.datadog_key}"
+    node_version = "${var.node_version}"
+  }
+}
+
 resource "aws_instance" "node" {
   ami                    = "${var.ami_id}"
   instance_type          = "t2.micro"
   key_name               = "${var.key_pair_name}"
   vpc_security_group_ids = ["${aws_security_group.apps.id}"]
+
+  user_data = "${data.template_file.node_user_data.rendered}"
 
   tags {
     Name = "tp_arqui_node"
@@ -19,45 +31,10 @@ resource "aws_instance" "node" {
     command = "echo ${aws_instance.node.public_ip} > node/ip"
   }
 
-  # Environment setup
   provisioner "remote-exec" {
     inline = [
-      "echo ------- Download nvm and install it -------",
-      "curl -o- ${local.installer_urls["nvm"]} | bash",
-      "echo ------- Load nvm -------",
-      ". ~/.nvm/nvm.sh",
-      "echo ------- Install node -------",
-      "nvm install 8.9",
-      "echo ------- Log node and npm versions -------",
-      "npm version",
-      "echo ------- Create application directory: ${var.root} -------",
+      "echo '------- Create application directory: ${var.root} -------'",
       "mkdir ${var.root}",
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${file(var.private_key_location)}"
-    }
-  }
-
-  # Upload installer script
-  provisioner "file" {
-    source      = "install_datadog.sh"
-    destination = "~/install_datadog.sh"
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${file(var.private_key_location)}"
-    }
-  }
-
-  # Execute installer script
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x ~/install_datadog.sh",
-      "~/install_datadog.sh ${var.datadog_key}",
     ]
 
     connection {

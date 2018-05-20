@@ -8,7 +8,7 @@ variable "region" {
 variable "datadog_key" {}
 
 variable "root" {
-  default = "~/app"
+  default = "/home/ec2-user/app"
 }
 
 variable "key_pair_name" {
@@ -25,4 +25,8 @@ variable "vpc_id" {
 
 variable "ami_id" {
   default = "ami-1853ac65"
+}
+
+variable "node_version" {
+  default = "8.11.2"
 }
