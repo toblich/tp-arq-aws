@@ -12,7 +12,7 @@ def root():
 @app.route("/sleep")
 @app.route("/sleep/<int:id>")
 def slow(id=None):
-    sleep(5)
+    sleep(0.1)
     return jsonify({'id': id})
 
 
