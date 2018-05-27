@@ -31,6 +31,17 @@ nvm use ${node_version}
 echo '------- Log node and npm versions -------'
 npm version
 
+echo '------- Provision instance with code -------'
+cd /home/ec2-user/
+curl ${src_location} > src.zip
+unzip src.zip
+
+echo '------- Install dependencies -------'
+npm install
+
+echo '------- Start application -------'
+nohup node . > node.out 2> node.err < /dev/null &
+
 EOF
 
 chown ec2-user "$USER_SCRIPT" && chmod a+x "$USER_SCRIPT"

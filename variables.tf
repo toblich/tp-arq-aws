@@ -5,6 +5,10 @@ variable "region" {
   default = "us-east-1"
 }
 
+variable "availability_zone" {
+  default = "us-east-1a"
+}
+
 variable "datadog_key" {}
 
 variable "root" {
@@ -29,4 +33,8 @@ variable "ami_id" {
 
 variable "node_version" {
   default = "8.11.2"
+}
+
+variable "src_location" {
+  default = "https://s3.amazonaws.com/tp-arqui-node-app-src/src.zip"
 }

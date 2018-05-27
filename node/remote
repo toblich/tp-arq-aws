@@ -2,9 +2,17 @@
 
 set -e
 
-COMMAND=$@
-
 DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IP=`cat $DIR/ip`
+
+if [[ -z $1 ]]; then
+    IP=`cat $DIR/ip`
+    COMMAND=''
+elif [[ -z $2 ]]; then
+    IP=$1
+    COMMAND=''
+else
+    IP=$1
+    COMMAND="${@:2}"
+fi
 
 ssh -i $DIR/../key.pem ec2-user@$IP -- $COMMAND

@@ -3,17 +3,23 @@
 set -e
 
 DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-IP=`cat $DIR/node_ip_address.txt`
 
-$DIR/stop
+IP=$1
 
-echo 'Copying files...'
-FILES=( 'package.json' 'package-lock.json' 'app.js' )
-for FILE in "${FILES[@]}"; do
-    scp -i $DIR/../key.pem $DIR/$FILE ec2-user@$IP:~/app/$FILE
-done
+if [[ -z $IP ]]; then
+    IP=`cat $DIR/ip`
+fi;
 
-echo 'Installing dependencies...'
-$DIR/remote 'cd app && npm i'
+echo "using IP $IP..."
 
-$DIR/start
+$DIR/stop $IP
+
+$DIR/remote $IP "\
+    echo 'Downloading updated src' && \
+    curl https://s3.amazonaws.com/tp-arqui-node-app-src/src.zip > src.zip && \
+    echo 'Unpacking src code' && \
+    unzip src.zip  && \
+    echo 'Installing dependencies' && \
+    npm i"
+
+$DIR/start $IP

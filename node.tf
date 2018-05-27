@@ -1,9 +1,3 @@
-locals {
-  installer_urls = {
-    nvm = "https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh"
-  }
-}
-
 data "template_file" "node_user_data" {
   template = "${file("${path.module}/node_user_data.sh")}"
 
@@ -11,86 +5,53 @@ data "template_file" "node_user_data" {
     root         = "${var.root}"
     datadog_key  = "${var.datadog_key}"
     node_version = "${var.node_version}"
+    src_location = "${var.src_location}"
   }
 }
 
-resource "aws_instance" "node" {
-  ami                    = "${var.ami_id}"
+resource "aws_launch_template" "node_lt" {
+  image_id               = "${var.ami_id}"
   instance_type          = "t2.micro"
   key_name               = "${var.key_pair_name}"
   vpc_security_group_ids = ["${aws_security_group.apps.id}"]
+  user_data              = "${base64encode("${data.template_file.node_user_data.rendered}")}"
+  name_prefix            = "node_lt-"
 
-  user_data = "${data.template_file.node_user_data.rendered}"
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
-  tags {
-    Name = "tp_arqui_node"
+resource "aws_elb" "node_asg_elb" {
+  name_prefix        = "node-"
+  availability_zones = ["${var.availability_zone}"]
+  security_groups    = ["${aws_security_group.elb.id}"]
+
+  listener {
+    instance_port     = 3000
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+}
+
+resource "aws_autoscaling_group" "node_asg" {
+  name_prefix      = "node_asg-"
+  max_size         = 3
+  min_size         = 0
+  desired_capacity = 1
+
+  load_balancers     = ["${aws_elb.node_asg_elb.name}"]
+  availability_zones = ["${var.availability_zone}"]
+
+  launch_template = {
+    id      = "${aws_launch_template.node_lt.id}"
+    version = "$$Latest"
   }
 
-  # Store the resulting IP
-  provisioner "local-exec" {
-    command = "echo ${aws_instance.node.public_ip} > node/ip"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "echo '------- Create application directory: ${var.root} -------'",
-      "mkdir ${var.root}",
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${file(var.private_key_location)}"
-    }
-  }
-
-  # Upload app
-  provisioner "file" {
-    source      = "node/app.js"
-    destination = "${var.root}/app.js"
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${file(var.private_key_location)}"
-    }
-  }
-
-  provisioner "file" {
-    source      = "node/package.json"
-    destination = "${var.root}/package.json"
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${file(var.private_key_location)}"
-    }
-  }
-
-  provisioner "file" {
-    source      = "node/package-lock.json"
-    destination = "${var.root}/package-lock.json"
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${file(var.private_key_location)}"
-    }
-  }
-
-  # Install app deps and run
-  provisioner "remote-exec" {
-    inline = [
-      "echo ------- Move into application directory: ${var.root} -------",
-      "cd ${var.root}",
-      "echo ------- Install dependencies -------",
-      "npm install",
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      private_key = "${file(var.private_key_location)}"
-    }
+  tag {
+    key                 = "Name"
+    value               = "tp_arqui_node_asg_instance"
+    propagate_at_launch = true
   }
 }
