@@ -33,6 +33,10 @@ resource "aws_elb" "node_asg_elb" {
     lb_port           = 80
     lb_protocol       = "http"
   }
+
+  provisioner "local-exec" {
+    command = "echo ${aws_elb.node_asg_elb.dns_name} >> node/elb_dns"
+  }
 }
 
 resource "aws_autoscaling_group" "node_asg" {
