@@ -50,7 +50,7 @@ async function getRemote(req, res) {
 }
 
 
-async function getCached() {
+async function getCached(req, res) {
   // Id to be used just for debugging, to identify which request a
   const reqId = Math.random().toString().slice(2, 11);
 
