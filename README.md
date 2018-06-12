@@ -92,3 +92,31 @@ terraform validate
 # Lista los providers instalados. Para este tp, deben ser al menos "aws" y "template"
 terraform providers
 ```
+
+## Correr los servidores
+Una vez que la infraestructura está creada, es importante notar que la misma tiene corriendo el proceso `node` (Notar que se corre el archivo `node_user_data.sh` al levantar la infraestructura, que es quien se encarga de comenzar dicho proceso) pero no el proceso `python`. Es importante entonces iniciar el proceso `python` en el servidor correspondiente.
+```sh
+# Iniciar servidor python
+cd python && ./start
+```
+
+Además es importante también notar que el código que comenzó a correr `node` posee una URL inválida del servidor python. Es por ello que es importante volver a zippear la aplicación, y subir el archivo `src.zip` resultante al bucket correspondiente (especificado tanto en el `variables.tf` como en el script `update` de la carpeta `node`). Luego, para que los cambios tomen efecto, hay que updatear el código del proceso `node` en su servidor. Entonces:
+```sh
+cd node
+./zip
+# Subir src.zip al bucket de S3 correspondiente
+./update <asg_ip_or_dns>
+```
+> **NOTA:** La IP o el DNS del ASG (`asg_ip_or_dns`) se pueden sacar de la consola de EC2 de AWS bajo los nombres "IPv4 Public IP" y "Public DNS (IPv4)" respectivamente.
+
+> **IMPORTANTE:** Cabe destacar que en el archivo `python.tf` se especifica un comando para copiar la IP con la que se creó la instancia de python a un archivo local. Allí mismo también hay un comando que copia dicha IP al archivo `config.js` de la app `node`, de forma de que al crear el archivo `src.zip` mencionado anteriormente, éste ya tenga la IP correcta para que se pueda comunicar.
+
+Una vez terminado esto, se puede verificar que el correcto funcionamiento utilizando la URL que se encuentra dentro del archivo `elb_dns` y pegándole:
+```sh
+curl http://<elb_dns_url>
+```
+
+Lo cual chequeará que la app `node` funciona. A su vez, si se quiere ver que la misma se puede comunicar con el servidor `python` es necesario utilizar:
+```sh
+curl http://<elb_dns_url>/remote
+```
