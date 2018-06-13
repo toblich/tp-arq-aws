@@ -12,6 +12,7 @@ node_modules/
 # Local files
 terraform.tfvars
 ip
+ips
 elb_dns
 src.zip
 key.pem

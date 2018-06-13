@@ -16,9 +16,9 @@ $DIR/stop $IP
 
 $DIR/remote $IP "\
     echo 'Downloading updated src' && \
-    curl https://s3.amazonaws.com/tp-arqui-node-app-src/src.zip > src.zip && \
+    curl https://s3.amazonaws.com/tp-arquitecturas/src.zip > src.zip && \
     echo 'Unpacking src code' && \
-    unzip src.zip  && \
+    unzip -o src.zip  && \
     echo 'Installing dependencies' && \
     npm i"
 

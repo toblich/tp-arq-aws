@@ -15,4 +15,4 @@ else
     COMMAND="${@:2}"
 fi
 
-ssh -i $DIR/../key.pem ec2-user@$IP -- $COMMAND
+ssh -o StrictHostKeyChecking=no -i $DIR/../key.pem ec2-user@$IP -- $COMMAND
