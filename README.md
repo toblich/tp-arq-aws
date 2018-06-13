@@ -97,7 +97,7 @@ terraform providers
 ### TL;DR
 Existe el script `start.sh` en la raíz del proyecto para crear la infraestructura y correr los servidores correspondientes.
 
-> **IMPORTANTE:** Es necesario tener instalado el [`aws-cli`](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-welcome.html) y [configurado](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-config-files.html) con las credenciales correspondientes, donde además [se utiliza un perfil](](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-multiple-profiles.html) llamado `terraform`. Además, en el mismo se utiliza el binario de `terraform`, asumiendo que el mismo se encuentra en `~`.
+> **IMPORTANTE:** Es necesario tener instalado el [`aws-cli`](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-welcome.html) y [configurado](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-config-files.html) con las credenciales correspondientes, donde además [se utiliza un perfil](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-multiple-profiles.html) llamado `terraform`. Además, en el mismo se utiliza el binario de `terraform`, asumiendo que el mismo se encuentra en `~`.
 
 ### Explicación
 Lo primero que hay que hacer es crear la infraestructura:
