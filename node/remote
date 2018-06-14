@@ -15,4 +15,5 @@ else
     COMMAND="${@:2}"
 fi
 
+# The -o StrictHostKeyChecking=no is to avoid asking for permission to add the $IP to the list of known hosts
 ssh -o StrictHostKeyChecking=no -i $DIR/../key.pem ec2-user@$IP -- $COMMAND

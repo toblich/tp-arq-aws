@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Create infrastructure. This also changes the python IP in the node app so that they can comunicate
+# Create infrastructure. This also changes the python IP and the redis DNS in the node app so that they can communicate
 echo "##### Applying terraform infrastructure #####"
 ~/terraform apply -auto-approve
 
@@ -10,7 +10,7 @@ cd python && ./start
 
 cd ../node
 
-# Get node instances IPs
+# Get node instances IPs with the AWS CLI. It returns a tab-separated string with the IPs, so we transform them to end-lines
 echo "##### Getting node instances IPs #####"
 aws ec2 describe-instances --profile terraform --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag-value,Values=tp_arqui_node_asg_instance" --output=text | tr '\t' '\n' > ips
 

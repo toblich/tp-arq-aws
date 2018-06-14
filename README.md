@@ -97,7 +97,7 @@ terraform providers
 ### TL;DR
 Existe el script `start.sh` en la raíz del proyecto para crear la infraestructura y correr los servidores correspondientes.
 
-> **IMPORTANTE:** Es necesario tener instalado el [`aws-cli`](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-welcome.html) y [configurado](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-config-files.html) con las credenciales correspondientes, donde además [se utiliza un perfil](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-multiple-profiles.html) llamado `terraform`. Además, en el mismo se utiliza el binario de `terraform`, asumiendo que el mismo se encuentra en `~`.
+> **IMPORTANTE:** Es necesario tener instalado el [`aws-cli`](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-welcome.html) y [configurado](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-config-files.html) con las credenciales correspondientes, donde además [se utiliza un perfil](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-multiple-profiles.html) llamado `terraform`. Además, en el mismo se utiliza el binario de `terraform`, asumiendo que el mismo se encuentra en `~`. Por último, tal como se explicó antes, se asume que existe un bucket de S3 llamado `tp-arquitecturas`, al cual tiene acceso dicho usuario.
 
 ### Explicación
 Lo primero que hay que hacer es crear la infraestructura:
@@ -147,4 +147,9 @@ curl http://<elb_dns_url>
 Lo cual chequeará que la app node funciona. A su vez, si se quiere ver que la misma se puede comunicar con el servidor python es necesario utilizar:
 ```sh
 curl http://<elb_dns_url>/remote
+```
+
+Finalmente, para verificar que la conexión de la app node con redis funciona, ejecutar:
+```sh
+curl http://<elb_dns_url>/remote/cached
 ```
