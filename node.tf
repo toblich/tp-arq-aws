@@ -35,7 +35,7 @@ resource "aws_elb" "node_asg_elb" {
   }
 
   provisioner "local-exec" {
-    command = "echo ${aws_elb.node_asg_elb.dns_name} >> node/elb_dns"
+    command = "echo ${aws_elb.node_asg_elb.dns_name} > node/elb_dns"
   }
 }
 
