@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Create infrastructure. This also changes the python IP and the redis DNS in the node app so that they can communicate
+# Create infrastructure. This also changes the python IP in the node app so that they can communicate
 echo "##### Applying terraform infrastructure #####"
 ~/terraform apply -auto-approve
 
