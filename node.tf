@@ -1,3 +1,7 @@
+locals {
+  src_location = "https://s3.amazonaws.com/${file("${path.module}/source_location")}/src.zip"
+}
+
 data "template_file" "node_user_data" {
   template = "${file("${path.module}/node_user_data.sh")}"
 
@@ -5,7 +9,7 @@ data "template_file" "node_user_data" {
     root         = "${var.root}"
     datadog_key  = "${var.datadog_key}"
     node_version = "${var.node_version}"
-    src_location = "${var.src_location}"
+    src_location = "${local.src_location}"
   }
 }
 

@@ -20,7 +20,7 @@ echo "##### Zipping node source code #####"
 ./zip
 # And we must upload the src.zip file to the S3 bucket (Which name is in TP_ARQUI_S3_BUCKET env var) by using the aws-cli.
 echo "##### Uploading node source code to S3 bucket #####"
-aws s3 cp src.zip "s3://$TP_ARQUI_S3_BUCKET/src.zip" --profile terraform
+aws s3 cp src.zip "s3://$(cat source_location)/src.zip" --profile terraform
 
 # By using the aws-cli, we get the node server IPs, so that we can update their code with the zip file.
 # Of course you can also get this data from the EC2 console under the name "IPv4 Public IP".
