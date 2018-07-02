@@ -16,3 +16,4 @@ ips
 elb_dns
 src.zip
 key.pem
+*.bak
