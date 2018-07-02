@@ -24,17 +24,17 @@ variable "private_key_location" {
 }
 
 variable "vpc_id" {
-  default = "vpc-d7cec3ac"
+  default = "vpc-7563400d"
 }
 
 variable "ami_id" {
-  default = "ami-14c5486b"
+  default = "ami-1853ac65"
 }
 
 variable "node_version" {
-  default = "8.11.1"
+  default = "8.11.2"
 }
 
 variable "src_location" {
-  default = "https://s3.amazonaws.com/tp-arquitecturas/src.zip"
+  default = "https://s3.amazonaws.com/tp-arqui-node-app-src/src.zip"
 }
