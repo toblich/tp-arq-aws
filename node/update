@@ -17,7 +17,7 @@ $DIR/stop $IP
 # The -o for the unzip command overrides if there's any existing file
 $DIR/remote $IP "\
     echo 'Downloading updated src' && \
-    curl https://s3.amazonaws.com/tp-arquitecturas/src.zip > src.zip && \
+    curl https://s3.amazonaws.com/$TP_ARQUI_S3_BUCKET/src.zip > src.zip && \
     echo 'Unpacking src code' && \
     unzip -o src.zip  && \
     echo 'Installing dependencies' && \
