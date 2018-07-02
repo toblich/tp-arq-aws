@@ -15,7 +15,7 @@ resource "aws_instance" "python" {
 
   # Use the python app IP in node code
   provisioner "local-exec" {
-    command = "sed -E \"s/(remoteBaseUri:)[^,]*,/\\1 'http:\\/\\/$(cat python/ip):3000',/\" node/config.js > node/temp.js && mv node/temp.js node/config.js"
+    command = "sed -Ei '' \"s/(remoteBaseUri:)[^,]*,/\\1 'http:\\/\\/$(cat python/ip):3000',/\" node/config.js"
   }
 
   # Environment setup
