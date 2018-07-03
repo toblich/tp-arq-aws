@@ -17,7 +17,7 @@ $DIR/python/start
 # correct IP that has been changed when applying the python.tf infrastructure
 echo "##### Zipping node source code #####"
 $DIR/node/zip
-# And we must upload the src.zip file to the S3 bucket (Which name is in TP_ARQUI_S3_BUCKET env var) by using the aws-cli.
+# And we must upload the src.zip file to the S3 bucket (Which name is in the source_location file) by using the aws-cli.
 echo "##### Uploading node source code to S3 bucket #####"
 aws s3 cp $DIR/node/src.zip "s3://$(cat $DIR/source_location)/src.zip" --profile terraform
 
