@@ -101,7 +101,7 @@ echo tp-arqui-node-app-src > source_location
 ./start.sh
 ```
 
-> **IMPORTANTE:** Es necesario tener instalado el [`aws-cli`](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-welcome.html) y [configurado](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-config-files.html) con las credenciales correspondientes, donde además [se utiliza un perfil](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-multiple-profiles.html) llamado `terraform`. Además, en el mismo se utiliza el binario de `terraform`, asumiendo que el mismo se encuentra en `~`. Por último, tal como se explicó antes, se asume que existe un bucket de S3 con el nombre que se indica en el archibo `source_location`, al cual tiene acceso dicho usuario.
+> **IMPORTANTE:** Es necesario tener instalado el [`aws-cli`](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-welcome.html) y [configurado](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-config-files.html) con las credenciales correspondientes, donde además [se utiliza un perfil](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-multiple-profiles.html) llamado `terraform`. Además, en el mismo se utiliza el binario de `terraform`, asumiendo que el mismo se encuentra agregado a la variable `$PATH`. Por último, tal como se explicó antes, se asume que existe un bucket de S3 con el nombre que se indica en el archibo `source_location`, al cual tiene acceso dicho usuario.
 
 ### Verificación
 Una vez levantados los servidores, se puede verificar su correcto funcionamiento utilizando la URL que se encuentra dentro del archivo `elb_dns` de la carpeta `node` y pegándole:
