@@ -14,7 +14,7 @@ Tanto para escalar horizontalmente como para agregar una instancia de Redis, cad
 ## Setup
 ### AWS
 - Con el [pack estudiantil de GitHub](https://education.github.com/pack), crear una cuenta estudiantil en [AWS](https://aws.amazon.com/).
-- Entrar en IAM y crear un usuario "Terraform" con el grupo de permisos necesarios (AmazonEC2FullAccess, AmazonElastiCacheFullAccess).
+- Entrar en IAM y crear un usuario "Terraform" con el grupo de permisos necesarios (AmazonEC2FullAccess, AmazonElastiCacheFullAccess, AmazonS3FullAccess).
     - Desde IAM, generar un par de credenciales (key/secret) para ese usuario.
 - (sugerido) Para facilitar el deployment, la propuesta es que creen un bucket en S3 en donde suban un zip con el código del servicio (`app.js`, `config.js`, `package.json` y `package-lock.json`), y luego cada instancia se encargará de bajarlo, descomprimirlo y ejecutarlo. Para esto entonces:
     - Ir a S3 y crear un bucket. Por simplicidad, recomiendo que el bucket acepte lecturas de cualquiera, pero no escrituras. Pueden habilitar el versionado de los objetos en el bucket si quieren, pero no es importante.
@@ -91,4 +91,25 @@ terraform validate
 
 # Lista los providers instalados. Para este tp, deben ser al menos "aws" y "template"
 terraform providers
+```
+
+## Correr los servidores
+Existe el script `start.sh` en la raíz del proyecto para crear la infraestructura y correr los servidores correspondientes.
+```bash
+# Guardo en el archivo source_location el nombre del bucket de S3 utilizado para guardar el código para deployar
+echo tp-arqui-node-app-src > source_location
+./start.sh
+```
+
+> **IMPORTANTE:** Es necesario tener instalado el [`aws-cli`](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-chap-welcome.html) y [configurado](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-config-files.html) con las credenciales correspondientes, donde además [se utiliza un perfil](https://docs.aws.amazon.com/es_es/cli/latest/userguide/cli-multiple-profiles.html) llamado `terraform`. Además, en el mismo se utiliza el binario de `terraform`, asumiendo que el mismo se encuentra agregado a la variable `$PATH`. Por último, tal como se explicó antes, se asume que existe un bucket de S3 con el nombre que se indica en el archivo `source_location`, al cual tiene acceso dicho usuario.
+
+### Verificación
+Una vez levantados los servidores, se puede verificar su correcto funcionamiento utilizando la URL que se encuentra dentro del archivo `elb_dns` de la carpeta `node` y pegándole:
+```sh
+curl http://<elb_dns_url>
+```
+
+Lo cual chequeará que la app node funciona. A su vez, si se quiere ver que la misma se puede comunicar con el servidor python es necesario utilizar:
+```sh
+curl http://<elb_dns_url>/remote
 ```
